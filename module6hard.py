@@ -8,10 +8,13 @@ class Figure:
         return self.color
 
     def set_color(self, r, g, b):
-        if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255:
+        if self._is_valid_color(r, g, b):
             self.color = [r, g, b]
         else:
             print("Некорректный цвет!")
+
+    def _is_valid_color(self, r, g, b):
+        return 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255
 
 class Circle(Figure):
     def __init__(self, color, radius):
@@ -27,7 +30,7 @@ class Circle(Figure):
         else:
             print("Радиус должен быть положительным!")
 
-    def len(self):
+    def __len__(self):
         return int(2 * math.pi * self.radius)
 
 class Cube(Figure):
@@ -39,13 +42,16 @@ class Cube(Figure):
         return self.__sides
 
     def set_sides(self, *sides):
-        if len(sides) == 12 and all(side > 0 for side in sides):
+        if self._is_valid_sides(*sides):
             self.__sides = list(sides)
         else:
             print("Некорректное количество или значения сторон!")
 
     def get_volume(self):
-        return self.__sides[0] * self.__sides[1] * self.__sides[2]  # Исправлено: вычисляем объем
+        return self.__sides[0] ** 3
+
+    def _is_valid_sides(self, *sides):
+        return len(sides) == 12 and all(side > 0 for side in sides)
 
 # Создание объектов
 circle1 = Circle((200, 200, 100), 10)
@@ -62,8 +68,9 @@ cube1.set_sides(5, 3, 12, 4, 5)  # Не изменится
 print(cube1.get_sides())
 circle1.set_sides(15)  # Изменится
 print(circle1.get_sides())
+
 # Проверка периметра (круга)
-print(circle1.len())
+print(circle1.__len__()) # Используем метод __len__ для получения периметра
 
 # Проверка объема (куба)
 print(cube1.get_volume())
